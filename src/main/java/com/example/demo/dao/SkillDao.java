@@ -19,4 +19,5 @@ public interface SkillDao extends JpaRepository<Skills, Integer> {
 
     @Query("SELECT new com.example.demo.dto.StatSkillDto(s.name, COUNT(*)) FROM Skills s LEFT JOIN user_skill us ON s.id = us.skills_id GROUP BY s.name")
     List<Objects[]> numberUserWithSkillNative();
+
 }
