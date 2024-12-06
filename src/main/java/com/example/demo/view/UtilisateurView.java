@@ -1,4 +1,4 @@
 package com.example.demo.view;
 
-public class SkillView {
+public class UtilisateurView {
 }

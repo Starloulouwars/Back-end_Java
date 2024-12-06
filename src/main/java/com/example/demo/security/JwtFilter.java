@@ -21,7 +21,7 @@ public class JwtFilter extends OncePerRequestFilter {
     JwtUtils jwtUtils;
 
     @Autowired
-    AppUserDetailsService appUserDetailsService;
+    AppUtilisateurDetailsService appUtilisateurDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -30,15 +30,15 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if(bearer != null) {
             String jwt = bearer.substring(7);
-            String email = jwtUtils.exctractEmailFromJwt(jwt);
+            String pseudo = jwtUtils.exctractpseudoFromJwt(jwt);
 
-            UserDetails userDetails = appUserDetailsService.loadUserByUsername(email);
+            UserDetails UserDetails = appUtilisateurDetailsService.loadUserByUsername(pseudo);
 
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            usernamePasswordAuthenticationToken
+            UsernamePasswordAuthenticationToken UsernamePasswordAuthenticationToken =
+                    new UsernamePasswordAuthenticationToken(UserDetails, null, UserDetails.getAuthorities());
+            UsernamePasswordAuthenticationToken
                     .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            SecurityContextHolder.getContext().setAuthentication(UsernamePasswordAuthenticationToken);
         }
         filterChain.doFilter(request, response);
     }

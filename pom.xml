@@ -50,6 +50,11 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt</artifactId>
 			<version>0.9.1</version>
@@ -75,6 +80,34 @@
 
 	</dependencies>
 
+	<profiles>
+		<profile>
+			<id>developpement</id>
+			<properties>
+				<db_host>127.0.0.1:3306</db_host>
+				<db_name>spring_td_THEVARD_Luke</db_name>
+				<db_user>root</db_user>
+				<db_password></db_password>
+				<ddl-auto>create</ddl-auto>
+				<sql.init.mode>always</sql.init.mode>
+				<jwt.secret>ilNeFautPasRegarder</jwt.secret>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>production</id>
+			<properties>
+				<db_host>127.0.0.1:3306</db_host>
+				<db_name>spring_td_THEVARD_Luke</db_name>
+				<db_user>root</db_user>
+				<db_password></db_password>
+				<ddl-auto>none</ddl-auto>
+				<sql.init.mode>never</sql.init.mode>
+				<jwt.secret>ilNeFautPasRegarder</jwt.secret>
+			</properties>
+		</profile>
+	</profiles>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -90,6 +123,12 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<filtering>true</filtering>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
 	</build>
 
 </project>

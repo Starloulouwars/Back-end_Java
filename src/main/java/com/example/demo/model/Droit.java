@@ -1,7 +1,5 @@
 package com.example.demo.model;
 
-import com.example.demo.view.SkillView;
-import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,16 +13,15 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class Status {
+public class Droit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    private Integer id;
 
-    @JsonView(SkillView.class)
-    String designation;
+    private String nom;
 
-    @OneToMany
-    List<User> user;
-
+    // Relation One-to-Many avec Utilisateur (Un droit peut être attribué à plusieurs utilisateurs)
+    @OneToMany(mappedBy = "droit")
+    private List<Utilisateur> utilisateurs;
 }

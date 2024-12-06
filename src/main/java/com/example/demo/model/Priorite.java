@@ -1,7 +1,7 @@
 package com.example.demo.model;
 
-import com.example.demo.view.SkillView;
-import com.example.demo.view.UserSkillView;
+import com.example.demo.view.TacheView;
+import com.example.demo.view.UtilisateurTacheView;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -17,17 +16,16 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-public class Skills {
+public class Priorite {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView(SkillView.class)
-    Integer id;
+    private Integer id;
 
-    @JsonView({UserSkillView.class, SkillView.class})
-    String name;
+    @JsonView(TacheView.class)
+    private String nom;
 
-    @ManyToMany(mappedBy = "skills")
-    @JsonView(SkillView.class)
-    List<User> user = new ArrayList<>();
+    // Relation One-to-Many avec Tache (Une priorite peut être partagée par plusieurs tache)
+    @OneToMany(mappedBy = "priorite")
+    private List<Tache> tache;
 }

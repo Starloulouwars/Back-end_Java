@@ -1,15 +1,14 @@
 package com.example.demo.controller;
 
-
-import com.example.demo.dao.StatusDao;
-import com.example.demo.dao.UserDao;
-import com.example.demo.model.Status;
-import com.example.demo.model.User;
-import com.example.demo.security.AppUserDetails;
+import com.example.demo.dao.UtilisateurDao;
+import com.example.demo.model.Droit;
+import com.example.demo.model.Priorite;
+import com.example.demo.model.Tache;
+import com.example.demo.model.Utilisateur;
+import com.example.demo.security.AppUtilisateurDetails;
+import com.example.demo.security.IsAdmin;
 import com.example.demo.security.JwtUtils;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -31,37 +30,38 @@ public class ConnexionController {
     BCryptPasswordEncoder encoder;
 
     @Autowired
-    UserDao userDao;
+    UtilisateurDao utilisateurDao;
 
     @Autowired
     AuthenticationProvider authenticationProvider;
 
+    @IsAdmin
     @PostMapping("/new-account")
-    public ResponseEntity<Map<String, Object>> inscription(@RequestBody User user){
+    public ResponseEntity<Map<String, Object>> inscription(@RequestBody Utilisateur utilisateur) {
 
-        user.setPassword(encoder.encode(user.getPassword()));
-        user.setAdmin(false);
-        Status disponible = new Status();
-        disponible.setId(1);
-        userDao.save(user);
-        user.setStatus(disponible);
+        utilisateur.setPassword(encoder.encode(utilisateur.getPassword()));
 
-        return ResponseEntity.ok(Map.of("message", "Register done"));
+        Droit employeDroit = new Droit();
+        employeDroit.setId(1);
+        utilisateur.setDroit(employeDroit);
 
+        utilisateurDao.save(utilisateur);
+
+        return ResponseEntity.ok(Map.of("message", "Utilisateur enregistré avec succès"));
     }
 
-    @PostMapping("/connexion")
-    public ResponseEntity<String> connexion(@RequestBody User user) {
 
+
+    @PostMapping("/connexion")
+    public ResponseEntity<String> connexion(@RequestBody Utilisateur utilisateur) {
         try {
-            AppUserDetails appUserDetails = (AppUserDetails) authenticationProvider
+            AppUtilisateurDetails appUtilisateurDetails = (AppUtilisateurDetails) authenticationProvider
                     .authenticate(
                             new UsernamePasswordAuthenticationToken(
-                                    user.getEmail(),
-                                    user.getPassword()))
+                                    utilisateur.getPseudo(),
+                                    utilisateur.getPassword()))
                     .getPrincipal();
-
-            return ResponseEntity.ok(jwtUtils.generateToken(appUserDetails.getUsername()));
+            return ResponseEntity.ok(jwtUtils.generateToken(appUtilisateurDetails.getUsername()));
 
         } catch (AuthenticationException ex) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -69,8 +69,7 @@ public class ConnexionController {
     }
 
     @GetMapping("/test-jwt")
-    public String testJwt() {
+    public String testjwt() {
         return jwtUtils.generateToken("a@a.com");
     }
-
 }
